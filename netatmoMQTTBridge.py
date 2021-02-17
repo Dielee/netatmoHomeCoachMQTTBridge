@@ -37,9 +37,9 @@ def getNetatmoData ():
     airData['Noise'] = data[MACADRESS]['Noise'], "mdi:volume-high", "dB"
     airData['Pressure'] = data[MACADRESS]['Pressure'], "hass:gauge", "mbar"
     airData['AbsolutePressure'] = data[MACADRESS]['AbsolutePressure'], "hass:gauge", "mbar"
-    airData['Health_idx'] = data[MACADRESS]['health_idx'], "mdi:cloud", ""
+    airData['Health_idx'] = getHealthIdx(data[MACADRESS]['health_idx']), "mdi:cloud", ""
     airData['Reachable'] = data[MACADRESS]['reachable'], "mdi:wifi", ""
-    airData['WifiStatus'] = data[MACADRESS]['wifi_status'], "mdi:wifi", ""
+    airData['WifiStatus'] = getWifiStatus(data[MACADRESS]['wifi_status']), "mdi:wifi", ""
     airData['CO2Calibrating'] = raw[0]['co2_calibrating'], "mdi:ab-testing", ""
 
     return airData
@@ -66,5 +66,29 @@ def sendToHA (airData):
                 port=1883, client_id="netatmoMQTTBridge", keepalive=60, will=None, 
                 tls=None, protocol=mqtt.MQTTv311, transport="tcp")
 
-    
+
+def getWifiStatus (wifi_status):
+    if (wifi_status <= 56):
+        wifi_status = "Good"
+    elif (wifi_status >= 57 and wifi_status <= 71):
+        wifi_status = "Average"
+    elif (wifi_status >= 72):
+        wifi_status = "Bad"
+
+    return wifi_status
+
+def getHealthIdx (health_idx):
+    if (health_idx == 0):
+        health_idx = "Healthy"
+    elif (health_idx == 1):
+        health_idx = "Fine"
+    elif (health_idx == 2):
+        health_idx = "Fair"
+    elif (health_idx == 3):
+        health_idx = "Poor"
+    elif (health_idx == 4):
+        health_idx = "Unhealthy"
+
+    return health_idx
+
 main()
