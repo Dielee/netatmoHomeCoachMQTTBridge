@@ -6,9 +6,8 @@ Please use Pyton 3.x and install the following dependencies:
 > pip3 install pyatmo, paho-mqtt
 > 
 
-After installing the dependencies, fill in your data from netatmo and an MQTT broker. 
+After installing the dependencies, fill in your data from netatmo and an MQTT broker in config.yaml. 
 
-The interval of data collection is freely selectable. 
-Every time the script starts, data is fetched.
+**Updateinterval is now fixed.**
 
-**More often than every 5 minutes should not be set.**
+Data is fetched every five minutes from last netatmo publishing time.
