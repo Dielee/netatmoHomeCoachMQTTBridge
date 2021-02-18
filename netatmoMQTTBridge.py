@@ -1,3 +1,4 @@
+from typing import ValuesView
 import pyatmo
 import json
 import paho.mqtt.client as mqtt
@@ -16,13 +17,13 @@ def main():
     # Initial Update on startup
     airData = getNetatmoData(cfg)
     sendToHA(airData, cfg)
-    nextFetchSec = getNextFetchTime (datetime.datetime.fromtimestamp(airData['lastUpdate'][0]))
+    nextFetchSec = getNextFetchTime (airData['lastUpdate'][0])
     
     while True:
         time.sleep(nextFetchSec)
         airData = getNetatmoData(cfg)
         sendToHA(airData, cfg)
-        nextFetchSec = getNextFetchTime (datetime.datetime.fromtimestamp(airData['lastUpdate'][0]))
+        nextFetchSec = getNextFetchTime (airData['lastUpdate'][0])
 
         
 def getNextFetchTime (lastUpdate):
@@ -61,7 +62,7 @@ def getNetatmoData (cfg):
 
     airData = {}
 
-    airData['lastUpdate'] = data[MACADRESS]['When'], "", ""
+    airData['lastUpdate'] = datetime.datetime.fromtimestamp(data[MACADRESS]['When']), "mdi:timer", ""
     airData['Temperature'] = data[MACADRESS]['Temperature'], "mdi:thermometer", "°C"
     airData['Humidity'] = data[MACADRESS]['Humidity'], "hass:water-percent", "%"
     airData['CO2'] = data[MACADRESS]['CO2'], "mdi:molecule-co2", "ppm"
@@ -94,8 +95,13 @@ def sendToHA (airData, cfg):
                         port=1883, client_id="netatmoMQTTBridge", keepalive=60, will=None, 
                         tls=None, protocol=mqtt.MQTTv311, transport="tcp")
 
+        if (isinstance(value[0], datetime.datetime)):
+            payload = value[0].strftime('%H:%M %d.%m.%Y')
+        else:
+            payload = value[0]
+
         publish.single(f"homeassistant/sensor/netatmoMQTTBridge_{key}/state", 
-                payload=value[0], qos=0, retain=False, hostname=mqttBrokerIP,
+                payload=payload, qos=0, retain=False, hostname=mqttBrokerIP,
                 port=1883, client_id="netatmoMQTTBridge", keepalive=60, will=None, 
                 tls=None, protocol=mqtt.MQTTv311, transport="tcp")
 
