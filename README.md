@@ -8,5 +8,6 @@ Please use Pyton 3.x and install the following dependencies:
 
 After installing the dependencies, fill in your data from netatmo and an MQTT broker in config.yaml. 
 
-**Updateinterval is now fixed. **
+**Updateinterval is now fixed.**
+
 Data is fetched every five minutes from last netatmo publishing time.
