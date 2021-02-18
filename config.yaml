@@ -1,0 +1,7 @@
+netatmoMQTTBridge: 
+  CLIENT_ID: '<dev.netatmo - client_id>'
+  CLIENT_SECRET: '<dev.netatmo - client_secret>'
+  USERNAME: '<netatmo - username>'
+  PASSWORD: '<netatmo - password>'
+  MACADRESS: '<homeCoach MAC Adress>'
+  mqttBrokerIP: '<MQTT Broker IP or FQDN>'
